@@ -17,10 +17,13 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(cors({
-    origin: "https://role-based-access-frontend.onrender.com", // Your frontend URL
-    // origin: process.env.CORS_ORIGIN,
-    credentials: true, // Allow sending cookies
-  }))
+  origin: [
+    "https://role-based-access-frontend.onrender.com",
+    "http://127.0.0.1:5500"
+  ],
+  credentials: true
+}));
+
 // console.log(process.env.PORT)
 
 
