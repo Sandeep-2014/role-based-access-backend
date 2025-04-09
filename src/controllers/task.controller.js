@@ -35,23 +35,34 @@ const getAdminTask = async (req, res) => {
         const users = await User.find().select("-password -updatedAt -createdAt -__v").lean()
         console.log(tasks)
 
-        const allTask = [];
+        // const allTask = [];
 
-        users.forEach((user) => {
-            const userTasks = tasks.filter(task => user._id.toString() === task.userId.toString());
+        // users.forEach((user) => {
+        //     const userTasks = tasks.filter(task => user._id.toString() === task.userId.toString());
 
-            if (userTasks.length === 0) return; 
+        //     if (userTasks.length === 0) return; 
 
-            const data = userTasks.map((task) => ({
-                ...task,
-                createdBy: user.name
-            }));
+        //     const data = userTasks.map((task) => ({
+        //         ...task,
+        //         createdBy: user.name
+        //     }));
 
-            allTask.push(...data);
-        });
+        //     allTask.push(...data);
+        // });
 
-        console.log(allTask);
-        console.log(allTask.length)
+        const allTask = users.map((user) => {
+            const userTask = tasks.filter(task => user._id.toString() === task.userId.toString())
+            return {
+                ...user,
+                allTask: userTask
+            }
+
+
+        })
+
+        console.log(taskss)
+        // console.log(allTask);
+        // console.log(allTask.length)
 
 
         // console.log(dataaa)
