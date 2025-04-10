@@ -7,17 +7,16 @@ const User = require("../model/signup.model.js")
 
 
 const signupUser = async (req, res) => {
-    // console.log("cookie: ", req.cookies)
     try {
         const { name, email, password } = req.body
 
         if (!name || !email || !password) {
-            return res.status(400).json({ message: "Please fill the all field" })
+            return res.status(400).json({success: false, message: "Please fill the all field" })
         }
 
         const isUser = await User.findOne({ email })
         if (isUser) {
-            return res.status(400).json({ message: "User with this email already exist please use another email or go to login page to login your accout" })
+            return res.status(400).json({success: false, message: "User with this email already exist please use another email or go to login page to login your accout" })
         }
 
         const hashPassword = await bcrypt.hash(password, 10)
@@ -30,41 +29,37 @@ const signupUser = async (req, res) => {
 
         const newUser = await User.create(data)
         console.log(newUser)
-        return res.status(201).json({ message: "User Registered Succefully", id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role })
+        return res.status(201).json({success: true, message: "User Registered Succefully", id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role })
 
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ message: "Internal Server Error" });
+        return res.status(500).json({success: false, message: "Internal Server Error While registering the user" });
     }
 }
 
 
 const loginUser = async (req, res) => {
-    // console.log("anothjer data")
-    // console.log("cookie: ", req.cookies)
-    // console.log("distructre cookie : ", req.cookies['example-cookie'])
-    // console.log("this is user data : ", req.user)
 
     try {
         const { email, password } = req.body
         console.log(email)
         console.log(password)
         if (!email || !password) {
-            return res.status(400).json({ message: "Please fill the field" })
+            return res.status(400).json({success: false, message: "Please fill the field" })
         }
 
         const isUser = await User.findOne({ email })
         console.log("this is user data", isUser)
 
         if (!isUser) {
-            return res.status(400).json({ message: "You are not the user please register yourself with this email" })
+            return res.status(400).json({success: false, message: "You are not the user please register yourself with this email" })
         }
 
         const decodePassword = await bcrypt.compare(password, isUser.password)
         console.log(decodePassword)
 
         if (!decodePassword) {
-            return res.status(400).json({ message: "Your entered password is incorrect" })
+            return res.status(400).json({success: false, message: "Your entered password is incorrect" })
         }
 
         const token  = jwt.sign({id: isUser.id}, process.env.JWT_SECRET, {expiresIn: "5m"})
@@ -74,7 +69,7 @@ const loginUser = async (req, res) => {
         // secure true ko vaise production me use karna chahie
         const options = {
             httpOnly: true, // Prevents JavaScript access
-            secure: true, // Send only over HTTPS
+            secure: true,
             sameSite: "None",
             // path: '/',
             // expires: new Date(Date.now() + 60 * 60 * 1000),
@@ -84,11 +79,11 @@ const loginUser = async (req, res) => {
 
         res.cookie('token-cookie', token, options)
 
-        return res.status(200).json({ message: "Login Succefully", id: isUser._id, name: isUser.name, email: isUser.email, role: isUser.role, token })
+        return res.status(200).json({success: true, message: "Login Succefully", token, role: isUser.role })
 
     } catch (error) {
-        console.error(error); // Logs the error in the console for debugging
-        return res.status(500).json({ message: "Internal Server Error" });
+        console.error(error);
+        return res.status(500).json({success: false, message: "Internal Server Error" });
     }
 }
 
@@ -99,7 +94,7 @@ const logoutUser = (req, res) => {
         sameSite: "None",
     }
     res.clearCookie("token-cookie", options)
-    return res.status(200).json({message: "User logout succefully."})
+    return res.status(200).json({success: true, message: "User logout succefully."})
 } 
 
 

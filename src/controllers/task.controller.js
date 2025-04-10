@@ -17,9 +17,9 @@ const addTask = async (req, res) => {
     try {
         const tasks = await Task.insertOne(data)
         console.log(tasks)
-        return res.status(201).json({ message: "Task Created Succefully" })
+        return res.status(201).json({ success: true, message: "Task Created Succefully" })
     } catch (error) {
-        return res.status(501).json({ message: "Something went wront while creating task" })
+        return res.status(501).json({ success: false, message: "Something went wront while creating task" })
     }
 
 }
@@ -51,39 +51,39 @@ const getAdminTask = async (req, res) => {
         // });
 
         const allTask = users.map((user) => {
-            const userTask = tasks.filter(task => user._id.toString() === task.userId.toString())
+            const userTasks = tasks.filter(task => user._id.toString() === task.userId.toString());
             return {
                 ...user,
-                allTask: userTask
-            }
-
-
-        })
-
-        console.log(taskss)
-        // console.log(allTask);
-        // console.log(allTask.length)
-
+                userTasks: userTasks
+            };
+        });
+        
+        console.log(allTask)
 
         // console.log(dataaa)
         // for (const task of tasks) {
         //     const user = await User.findById(task.userId);
         //     task.createdBy = user.name
         // }
-        // // console.log(tasks);
+
         // let allTask = tasks
 
-        // console.log("This is the data after finding all task with admin id")
-        // console.log(allTask)
-        // console.log("this request.user")
-        // console.log(req.user)
-        // console.log("this is the length of task")
-        // console.log(allTask.length)
-        // console.log(req.user.role)
-        // console.log(req.user.name)
-        return res.status(200).json({ message: "all task find with user id", allTask, role: req.user.role, name: req.user.name })
-    } catch (error) {
+        return res.status(200).json({
+            success: true,
+            message: "Tasks fetched successfully",
+            name: req.user.name,
+            allTask
+        });
+
+
+
+    }catch(error){
         console.log(error)
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong while fetching admin tasks",
+            error: error.message
+        });
     }
 
 
@@ -104,7 +104,7 @@ const getUserTask = async (req, res) => {
         // console.log(allTask.length)
         // console.log(req.user.role)
         // console.log(req.user.name)
-        return res.status(200).json({ message: "all task find with user id", allTask, role: req.user.role, name: req.user.name })
+        return res.status(200).json({ message: "all task find abwith user id", allTask, role: req.user.role, name: req.user.name })
     } catch (error) {
         console.log(error)
     }
