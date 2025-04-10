@@ -1,8 +1,8 @@
 const express = require("express")
 const router = express.Router()
 const {verifyCookie} = require("../middlewares/auth.middleware.js")
-
 const {addTask, getAdminTask, getUserTask} = require("../controllers/task.controller.js")
+
 
 router.post("/addUserTask", verifyCookie, addTask)
 

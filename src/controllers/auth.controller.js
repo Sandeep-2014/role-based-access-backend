@@ -16,7 +16,7 @@ const signupUser = async (req, res) => {
 
         const isUser = await User.findOne({ email })
         if (isUser) {
-            return res.status(400).json({success: false, message: "User with this email already exist please use another email or go to login page to login your accout" })
+            return res.status(400).json({success: false, message: "User with this email already exist please use another email or go to login page to login your account" })
         }
 
         const hashPassword = await bcrypt.hash(password, 10)
@@ -37,26 +37,25 @@ const signupUser = async (req, res) => {
     }
 }
 
-
 const loginUser = async (req, res) => {
 
     try {
         const { email, password } = req.body
-        console.log(email)
-        console.log(password)
+        // console.log(email)
+        // console.log(password)
         if (!email || !password) {
             return res.status(400).json({success: false, message: "Please fill the field" })
         }
 
         const isUser = await User.findOne({ email })
-        console.log("this is user data", isUser)
+        // console.log("this is user data", isUser)
 
         if (!isUser) {
             return res.status(400).json({success: false, message: "You are not the user please register yourself with this email" })
         }
 
         const decodePassword = await bcrypt.compare(password, isUser.password)
-        console.log(decodePassword)
+        // console.log(decodePassword)
 
         if (!decodePassword) {
             return res.status(400).json({success: false, message: "Your entered password is incorrect" })
@@ -64,9 +63,6 @@ const loginUser = async (req, res) => {
 
         const token  = jwt.sign({id: isUser.id}, process.env.JWT_SECRET, {expiresIn: "5m"})
 
-        // pehle secure false rakhne ki vajah se cookies set ho rhi thi lekin devtools me cookie section ko refresh karne ke baad 
-        // lekin jab mene secure true kiya to ab mughe cookies section ko refresh karne ki jaroot nahi pad rhi hai automatically cookies set kar rha hai aur show kr rha hai 
-        // secure true ko vaise production me use karna chahie
         const options = {
             httpOnly: true, // Prevents JavaScript access
             secure: true,
@@ -82,7 +78,7 @@ const loginUser = async (req, res) => {
         return res.status(200).json({success: true, message: "Login Succefully", token, role: isUser.role })
 
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return res.status(500).json({success: false, message: "Internal Server Error" });
     }
 }
@@ -102,5 +98,4 @@ module.exports = {
     signupUser,
     loginUser,
     logoutUser
-    // cookieValidation
 }
