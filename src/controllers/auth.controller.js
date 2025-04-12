@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
 
-const User = require("../model/signup.model.js")
+const User = require("../model/user.model.js")
 
 
 

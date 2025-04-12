@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require("../model/signup.model.js")
+const User = require("../model/user.model.js")
 
 // Middleware to verify JWT token
 const verifyCookie = async (req, res, next) => {
@@ -19,7 +19,8 @@ const verifyCookie = async (req, res, next) => {
         if(!user){
             return res.status(400).json({success: false, message: "User is Not found"})
         }
-        // console.log(user)
+        console.log("this is user data")
+        console.log(user)
         req.user = user; 
         next();
     } catch (error) {
