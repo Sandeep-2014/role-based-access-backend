@@ -8,7 +8,7 @@ router.post('/register', signupUser)
 
 router.post('/login', loginUser)
 
-router.post('/logout', logoutUser)
+router.post('/logout', verifyCookie, logoutUser)
 
 
 module.exports = router

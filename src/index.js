@@ -22,6 +22,11 @@ app.use(cors({
   credentials: true
 }));
 
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
+
 
 const port = process.env.PORT || 4001
 
