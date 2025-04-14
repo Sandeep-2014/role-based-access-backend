@@ -29,7 +29,7 @@ const signupUser = async (req, res) => {
 
         const newUser = await User.create(data)
         console.log(newUser)
-        return res.status(201).json({success: true, message: "User Registered Succefully", id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role })
+        return res.status(201).json({success: true, message: "User Registered Succefully"})
 
     } catch (error) {
         console.log(error)
